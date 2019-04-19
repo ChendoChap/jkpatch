@@ -4,6 +4,9 @@
 #include "jkpatch.h"
 #include "install.h"
 
+extern uint8_t kpayload[];
+extern int32_t kpayload_size;
+
 // perfect for putty
 void ascii_art(void *_printf) {
 	printf("\n\n");
@@ -51,12 +54,6 @@ void debug_patches(struct thread *td, uint64_t kernbase) {
 	//*(uint32_t *)(kernbase + 0x4D70F7) = 0;
 	//*(uint32_t *)(kernbase + 0x4D7F81) = 0;
 
-	// flatz RSA check patch
-	*(uint32_t *)(kernbase + 0x69F4E0) = 0x90C3C031;
-
-	// flatz enable debug rifs
-	*(uint64_t *)(kernbase + 0x62D30D) = 0x3D38EB00000001B8;
-
 	// disable sysdump_perform_dump_on_fatal_trap
 	// will continue execution and give more information on crash, such as rip
 	*(uint8_t *)(kernbase + 0x736250) = 0xC3;
@@ -90,70 +87,10 @@ void scesbl_patches(struct thread *td, uint64_t kernbase) {
 	*(uint64_t *)(td_ucred + 0x68) = 0xFFFFFFFFFFFFFFFF;
 
 	// sceSblACMgrIsAllowedSystemLevelDebugging
-	*(uint8_t *)(kernbase + 0x36057B) = 0;
+	memcpy((void*)(kernbase + 0x16A530), "\x31\xC0\x40\xC3", 5);
 }
 
-int receive_payload(void **payload, size_t *psize) {
-	struct sockaddr_in server;
-	server.sin_len = sizeof(server);
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = IN_ADDR_ANY;
-	server.sin_port = sceNetHtons(9023);
-	memset(server.sin_zero, 0, sizeof(server.sin_zero));
-
-	int servsock = sceNetSocket("jkpatch", AF_INET, SOCK_STREAM, 0);
-
-	sceNetBind(servsock, (struct sockaddr *)&server, sizeof(server));
-
-	sceNetListen(servsock, 128);
-
-	int client = sceNetAccept(servsock, NULL, NULL);
-	if (client < 0) {
-		return 1;
-	}
-
-	void *data = (void *)malloc(4096);
-	int recvlen = 0;
-	int length = 0;
-
-	while (1) {
-		recvlen = sceNetRecv(client, data + length, 4096, 0);
-		length += recvlen;
-
-		if (recvlen) {
-			void *ndata = (void *)realloc(data, length + 4096);
-			if (ndata) {
-				data = ndata;
-			} else {
-				break;
-			}
-		} else {
-			break;
-		}
-	}
-
-	if (payload) {
-		*payload = data;
-	} else {
-		free(data);
-	}
-
-	if (psize) {
-		*psize = length;
-	}
-
-	sceNetSocketClose(servsock);
-
-	return 0;
-}
-
-struct jkuap {
-	uint64_t sycall;
-	void *payload;
-	size_t psize;
-};
-
-int jkpatch(struct thread *td, struct jkuap *uap) {
+int jkpatch(struct thread *td) {
 	uint64_t kernbase = getkernbase();
 	resolve(kernbase);
 
@@ -184,18 +121,13 @@ int jkpatch(struct thread *td, struct jkuap *uap) {
 
 	printf("[jkpatch] loading payload...\n");
 
-	if (!uap->payload) {
-		printf("[jkpatch] payload data is NULL!\n");
-		return 1;
-	}
-
 	// install wizardry
-	if (install_payload(td, kernbase, uap->payload, uap->psize)) {
+	if (install_payload(td, kernbase, kpayload, kpayload_size)) {
 		printf("[jkpatch] install_payload failed!\n");
 		return 1;
 	}
 
-	printf("[jkpatch] all done! have fun with homebrew!\n");
+	printf("[jkpatch] all done!\n");
 
 	return 0;
 }
@@ -203,17 +135,12 @@ int jkpatch(struct thread *td, struct jkuap *uap) {
 int _main(void) {
 	initKernel();
 	initLibc();
-	initNetwork();
 
 	// fuck up the updates
 	unlink("/update/PS4UPDATE.PUP");
 	mkdir("/update/PS4UPDATE.PUP", 777);
 
-	size_t psize = 0;
-	void *payload = NULL;
-	receive_payload(&payload, &psize);
-
-	syscall(11, jkpatch, payload, psize);
+	syscall(11, jkpatch);
 
 	// this could race
 	/*if (payload) {

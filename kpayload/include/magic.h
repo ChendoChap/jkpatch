@@ -54,23 +54,6 @@
 #define __vm_map_lock							0x391F40
 #define __vm_map_unlock 						0x391FB0
 #define __proc_rwmem							0x17CB70
-#define __sceSblAuthMgrIsLoadable2				0x625C50
-#define __sceSblAuthMgrVerifyHeader				0x625CB0
-#define __sceSblAuthMgrGetSelfInfo				0x626490
-#define __sceSblAuthMgrSmStart					0x622020
-#define __sceSblKeymgrSmCallfunc				0x60E680
-#define __sceSblPfsKeymgrGenEKpfsForGDGPAC		0x60F000
-#define __sceSblPfsSetKey						0x606E00
-#define __sceSblPfsClearKey						0x606F80
-#define __sceSblServiceMailbox					0x6146C0
-#define __sceSblServiceCrypt					0x60C880
-#define __sceSblServiceCryptAsync				0x60CA10
-#define __AesCbcCfb128Encrypt					0x17A4C0
-#define __AesCbcCfb128Decrypt					0x17A6F0
-#define __Sha256Hash							0x2D5B80
-#define __Sha256Hmac							0x2D5C50
-#define __RsaesPkcs1v15Enc2048					0x4667D0
-#define __RsaesPkcs1v15Dec2048CRT				0x3EF200
 
 #define __disable_console_output        0x1997BC8
 #define __M_TEMP					   	0x1993B30
@@ -78,7 +61,3 @@
 #define __prison0                       0x10399B0
 #define __rootvnode                     0x21AFA30
 #define __allproc						0x1AD7718
-#define __fpu_kern_ctx					0x251CCC0
-#define __mini_syscore_self_binary 		0x1471468
-#define __sbl_driver_mapped_pages  		0x2519DD0
-#define __sbl_keymgr_key_rbtree			0x2534DE0

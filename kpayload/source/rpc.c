@@ -958,6 +958,27 @@ error:
 	return r;
 }
 
+int rpc_handle_protect(int fd, struct rpc_proc_protect *pprotect) {
+	int r = 0;
+	void *addr, *end;
+
+	struct proc *p = proc_find_by_pid(pprotect->pid);
+	if (p) {
+		addr = (void *)pprotect->address;
+		end = (void *)(pprotect->address + pprotect->length);
+		proc_mprotect(p, addr, end, pprotect->newprot);
+		rpc_send_status(fd, RPC_SUCCESS);
+	} else {
+		rpc_send_status(fd, RPC_NO_PROC);
+		r = 1;
+		goto error;
+	}
+
+error:
+
+	return r;
+}
+
 int rpc_cmd_handler(int fd, struct rpc_packet *packet) {
 	//uprintf("packet cmd %X\n", packet->cmd);
 
@@ -1012,6 +1033,10 @@ int rpc_cmd_handler(int fd, struct rpc_packet *packet) {
 	}
 	case RPC_KERN_WRITE: {
 		rpc_handle_kwrite(fd, (struct rpc_kern_write *)packet->data);
+		break;
+	}
+	case RPC_PROC_PROTECT: {
+		rpc_handle_protect(fd, (struct rpc_proc_protect *)packet->data);
 		break;
 	}
 	}

@@ -3,15 +3,14 @@
 TARGET = payload.bin
 KTARGET = kpayload.elf
 
-all: clean $(TARGET) $(KTARGET)
+all: clean $(KTARGET) $(TARGET)
 
 $(TARGET):
 	cd payload && $(MAKE) -s
 	cp payload/$(TARGET) $(TARGET)
 
 $(KTARGET):
-	cd kpayload && $(MAKE) -s
-	cp kpayload/$(KTARGET) $(KTARGET)
+	cd kpayload && $(MAKE) -s && elfedit --output-type=DYN $(KTARGET)
 	
 .PHONY: clean
 clean:

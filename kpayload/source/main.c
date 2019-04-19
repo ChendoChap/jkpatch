@@ -4,8 +4,6 @@
 #include "jkpayload.h"
 
 #include "rpc.h"
-#include "fself.h"
-#include "fpkg.h"
 
 void hook_trap_fatal(struct trapframe *tf) {
 	// print registers
@@ -62,13 +60,6 @@ int payload_entry(void *arg) {
 
 	// initialize rpc
 	init_rpc();
-
-	// fake self binaries
-	install_fself_hooks();
-
-	// fake package containers
-	shellcore_fpkg_patch();
-	install_fpkg_hooks();
 
 	return 0;
 }
