@@ -40,8 +40,8 @@ int rpc_proc_load(struct proc *p, uint64_t address) {
 	// has a check to see if child_tid/parent_tid is in kernel memory, and it in so patch it
 	uint64_t kernbase = getkernbase();
 	uint64_t CR0 = __readcr0();
-	uint16_t *suword_lwpid1 = (uint16_t *)(kernbase + 0x14AB92);
-	uint16_t *suword_lwpid2 = (uint16_t *)(kernbase + 0x14ABA1);
+	uint16_t *suword_lwpid1 = (uint16_t *)(kernbase + 0x14A222);
+	uint16_t *suword_lwpid2 = (uint16_t *)(kernbase + 0x14A231);
 	__writecr0(CR0 & ~CR0_WP);
 	*suword_lwpid1 = 0x9090;
 	*suword_lwpid2 = 0x9090;
@@ -56,7 +56,7 @@ int rpc_proc_load(struct proc *p, uint64_t address) {
 		goto error;
 	}
 
-	// offsets are for 4.55 libraries
+	// offsets are for 4.74 libraries
 	// todo: write patch finder
 
 	// libkernel.sprx
@@ -69,7 +69,7 @@ int rpc_proc_load(struct proc *p, uint64_t address) {
 
 	// libkernel_sys.sprx
 	// 0x120F0 scePthreadCreate
-	// 0x80D20 thr_initial
+	// 0x81230 thr_initial
 
 	uint64_t _scePthreadAttrInit = 0, _scePthreadAttrSetstacksize = 0, _scePthreadCreate = 0, _thr_initial = 0;
 	for (int i = 0; i < num_entries; i++) {
@@ -77,8 +77,15 @@ int rpc_proc_load(struct proc *p, uint64_t address) {
 			continue;
 		}
 
-		if (!memcmp(entries[i].name, "libkernel.sprx", 14) ||
-		        !memcmp(entries[i].name, "libkernel_web.sprx", 18)) {
+		if (!memcmp(entries[i].name, "libkernel.sprx", 14)) {
+			_scePthreadAttrInit = entries[i].start + 0x11180;
+			_scePthreadAttrSetstacksize = entries[i].start + 0x111A0;
+			_scePthreadCreate = entries[i].start + 0x115C0;
+			_thr_initial = entries[i].start + 0x7CD20;
+			break;
+		}
+
+		if (!memcmp(entries[i].name, "libkernel_web.sprx", 18)) {
 			_scePthreadAttrInit = entries[i].start + 0x11180;
 			_scePthreadAttrSetstacksize = entries[i].start + 0x111A0;
 			_scePthreadCreate = entries[i].start + 0x115C0;
@@ -90,11 +97,11 @@ int rpc_proc_load(struct proc *p, uint64_t address) {
 			_scePthreadAttrInit = entries[i].start + 0x11CB0;
 			_scePthreadAttrSetstacksize = entries[i].start + 0x11CD0;
 			_scePthreadCreate = entries[i].start + 0x120F0;
-			_thr_initial = entries[i].start + 0x80D20;
+			_thr_initial = entries[i].start + 0x81230;
 			break;
 		}
+	
 	}
-
 	if (!_scePthreadAttrInit) {
 		goto error;
 	}

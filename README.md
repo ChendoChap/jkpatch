@@ -9,10 +9,8 @@
 - RPC server
 - RPC client in C#
 
-I use the standard fake pkg keys, created by flatz.
-
 ### General Notes
-**Only for 4.55 Jailbroken PlayStation 4 consoles!**
+**Only for 4.74 Jailbroken PlayStation 4 consoles!**
 
 The main jkpatch payload utilizes [a port of CTurt's payload sdk](https://github.com/xvortex/ps4-payload-sdk).
 

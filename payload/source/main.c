@@ -38,31 +38,15 @@ void jailbreak(struct thread *td, uint64_t kernbase) {
 }
 
 void debug_patches(struct thread *td, uint64_t kernbase) {
-	// sorry... this is very messy!
-	// TODO: label and explain patches
-	*(uint8_t *)(kernbase + 0x1B6D086) |= 0x14;
-	*(uint8_t *)(kernbase + 0x1B6D0A9) |= 0x3;
-	*(uint8_t *)(kernbase + 0x1B6D0AA) |= 0x1;
-	*(uint8_t *)(kernbase + 0x1B6D0C8) |= 0x1;
-
-	// registry patches for extra debug information
-	// fucks with the whole system, patches sceRegMgrGetInt
-	// 405
-	//*(uint32_t *)(kernbase + 0x4CECB7) = 0;
-	//*(uint32_t *)(kernbase + 0x4CFB9B) = 0;
-	// 455
-	//*(uint32_t *)(kernbase + 0x4D70F7) = 0;
-	//*(uint32_t *)(kernbase + 0x4D7F81) = 0;
-
 	// disable sysdump_perform_dump_on_fatal_trap
 	// will continue execution and give more information on crash, such as rip
-	*(uint8_t *)(kernbase + 0x736250) = 0xC3;
+	*(uint8_t *)(kernbase + 0x73A6A0) = 0xC3;
 
 	// patch vm_map_protect check
-	memcpy((void *)(kernbase + 0x396A58), "\x90\x90\x90\x90\x90\x90", 6);
+	memcpy((void *)(kernbase + 0x397878), "\x90\x90\x90\x90\x90\x90", 6);
 
 	// patch ASLR, thanks 2much4u
-	*(uint16_t *)(kernbase + 0x1BA559) = 0x9090;
+	*(uint16_t *)(kernbase + 0x1BC769) = 0x9090;
 }
 
 void scesbl_patches(struct thread *td, uint64_t kernbase) {
@@ -87,7 +71,7 @@ void scesbl_patches(struct thread *td, uint64_t kernbase) {
 	*(uint64_t *)(td_ucred + 0x68) = 0xFFFFFFFFFFFFFFFF;
 
 	// sceSblACMgrIsAllowedSystemLevelDebugging
-	memcpy((void*)(kernbase + 0x16A530), "\x31\xC0\x40\xC3", 5);
+	memcpy((void*)(kernbase + 0x169790), "\x31\xC0\x40\xC3", 4);
 }
 
 int jkpatch(struct thread *td) {

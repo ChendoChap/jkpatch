@@ -44,8 +44,8 @@ void install_trap_hook() {
 
 	uint64_t kernbase = getkernbase();
 
-	memcpy((void *)(kernbase + 0x3DC078), "\x4C\x89\xE7", 3); // mov rdi, r12
-	write_jmp(kernbase + 0x3DC07B, (uint64_t)hook_trap_fatal);
+	memcpy((void *)(kernbase + 0x3DCF28), "\x4C\x89\xE7", 3); // mov rdi, r12
+	write_jmp(kernbase + 0x3DCF2B, (uint64_t)hook_trap_fatal);
 
 	// restore CR0
 	__writecr0(CR0);
