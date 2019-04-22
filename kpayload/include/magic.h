@@ -37,8 +37,8 @@
 #define __mtx_init								0x402780
 #define __mtx_lock_spin_flags					0x402100
 #define __mtx_unlock_spin_flags					0x4022C0
-#define __mtx_lock_sleep						0x401CD0
-#define __mtx_unlock_sleep						0x401FA0
+#define __mtx_lock_flags						0x401CD0
+#define __mtx_unlock_flags						0x401FA0
 #define __fpu_kern_enter						0x1BFF90
 #define __fpu_kern_leave						0x1C0090
 #define __kern_reboot							0x10D390
