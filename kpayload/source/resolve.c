@@ -51,4 +51,5 @@ void resolve(uint64_t kernbase) {
 	r(vmspace_acquire_ref, __vmspace_acquire_ref);
 	r(fill_regs, __fill_regs);
 	r(set_regs, __set_regs);
+	r(eventhandler_register, __eventhandler_register);
 }

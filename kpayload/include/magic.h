@@ -54,6 +54,7 @@
 #define __vm_map_lock							0x19EFF0
 #define __vm_map_unlock 						0x19F060
 #define __proc_rwmem							0x30D150
+#define __eventhandler_register				0x1EC400
 
 //net.c
 #define __sys_socket							0x318EE0

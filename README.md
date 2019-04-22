@@ -9,16 +9,10 @@
 - RPC server
 - RPC client in C#
 
-I use the standard fake pkg keys, created by flatz.
-
 ### General Notes
 **Only for 5.05 Jailbroken PlayStation 4 consoles!**
 
-The main jkpatch payload utilizes a port of CTurt's payload sdk. Change the [Makefile](payload/Makefile) to have `LIBPS4` point to the ps4-payload-sdk directory on your machine. I could have it referenced from the home directory but meh...
-```makefile
-# change this to point to your ps4-payload-sdk directory
-LIBPS4	:=	/home/John/ps4-payload-sdk/libPS4
-```
+The main jkpatch payload utilizes [a port of CTurt's payload sdk](https://github.com/xvortex/ps4-hen-vtx).
 
 If you decide to edit the `resolve` code in the kernel payload, make sure you do not mess with...
 ```c
