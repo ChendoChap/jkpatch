@@ -37,8 +37,8 @@
 #define __mtx_init								0x3102C0
 #define __mtx_lock_spin_flags					0x30FC70
 #define __mtx_unlock_spin_flags					0x30FE30
-#define __mtx_lock_sleep						0x30F910
-#define __mtx_unlock_sleep						0x30FB40
+#define __mtx_lock_flags 						0x30F8A0
+#define __mtx_unlock_flags 						0x30FB40
 #define __fpu_kern_enter						0x058B60
 #define __fpu_kern_leave						0x058C60
 #define __kern_reboot							0x098EE0
@@ -60,4 +60,4 @@
 #define __kernel_map                    		0x1B39218
 #define __prison0                       		0x1042AB0
 #define __rootvnode                     		0x21B89E0
-#define __allproc								0x21B89E0
+#define __allproc								0x1ADF718

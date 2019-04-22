@@ -10,8 +10,4 @@ void resolve(uint64_t kernbase) {
 	r(printf, __printf);
 	r(k_malloc, __malloc);
 	r(k_free, __free);
-	r(k_memcpy, __memcpy);
-	r(k_memset, __memset);
-	r(k_memcmp, __memcmp);
-	r(k_strlen, __strlen);
 }

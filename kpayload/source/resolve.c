@@ -33,8 +33,8 @@ void resolve(uint64_t kernbase) {
 	r(mtx_init, __mtx_init);
 	r(mtx_lock_spin_flags, __mtx_lock_spin_flags);
 	r(mtx_unlock_spin_flags, __mtx_unlock_spin_flags);
-	r(mtx_lock_sleep, __mtx_lock_sleep);
-	r(mtx_unlock_sleep, __mtx_unlock_sleep);
+	r(mtx_lock_flags, __mtx_lock_flags);
+	r(mtx_unlock_flags, __mtx_unlock_flags);
 	r(fpu_kern_enter, __fpu_kern_enter);
 	r(fpu_kern_leave, __fpu_kern_leave);
 	r(kern_reboot, __kern_reboot);

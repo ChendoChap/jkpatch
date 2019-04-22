@@ -119,13 +119,9 @@ int jkpatch(struct thread *td) {
 int _main(void) {
 	initKernel();
 	initLibc();
-
-	// fuck up the updates
-	unlink("/update/PS4UPDATE.PUP");
-	mkdir("/update/PS4UPDATE.PUP", 777);
-
-	syscall(11, jkpatch);
-
+	syscall(11, jkpatch);	
+	initSysUtil();
+	sceSysUtilSendSystemNotificationWithText(222,"jkpatch 4.74 loaded >:)...\n");
 	// this could race
 	/*if (payload) {
 		free(payload);

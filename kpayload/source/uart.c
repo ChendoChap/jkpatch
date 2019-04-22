@@ -12,7 +12,7 @@ void init_uart() {
 int uprintf(const char *fmt, ...) {
 	va_list va;
 
-	mtx_lock_sleep(&uart_mtx, 0);
+	mtx_lock_flags(&uart_mtx, 0);
 
 	va_start(va, fmt);
 	int r = vprintf(fmt, va);
@@ -20,7 +20,7 @@ int uprintf(const char *fmt, ...) {
 
 	printf("\n");
 
-	mtx_unlock_sleep(&uart_mtx, 0);
+	mtx_unlock_flags(&uart_mtx, 0);
 
 	return r;
 }
