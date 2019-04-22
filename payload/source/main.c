@@ -87,7 +87,7 @@ void scesbl_patches(struct thread *td, uint64_t kernbase) {
 	*(uint64_t *)(td_ucred + 0x68) = 0xFFFFFFFFFFFFFFFF;
 
 	// sceSblACMgrIsAllowedSystemLevelDebugging
-	memcpy((void*)(kernbase + 0x16A530), "\x31\xC0\x40\xC3", 5);
+	memcpy((void*)(kernbase + 0x16A530), "\x31\xC0\x40\xC3", 4);
 }
 
 int jkpatch(struct thread *td) {
