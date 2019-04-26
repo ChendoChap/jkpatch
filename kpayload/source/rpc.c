@@ -4,6 +4,7 @@
 #include "rpc.h"
 
 struct proc *krpcproc;
+int suspend_flag = 0;
 
 int rpc_proc_load(struct proc *p, uint64_t address) {
 	void *rpcldraddr = NULL;
@@ -1056,6 +1057,9 @@ void rpc_handler(void *vfd) {
 	while (1) {
 		kthread_suspend_check();
 
+		if(suspend_flag) {
+			break;
+		}
 		pause("rpchandler", 15);
 
 		// wait to recv packets
@@ -1164,6 +1168,9 @@ void rpc_server_thread(void *arg) {
 	
 	while (1) {
 		kthread_suspend_check();
+		if(suspend_flag) {
+			break;
+		}
 
 		// accept connection
 		newfd = net_accept(fd, NULL, NULL);
@@ -1193,10 +1200,24 @@ error:
 	kthread_exit();
 }
 
+void suspend_rpc() {
+	suspend_flag = 1;
+	uprintf("[jkpatch] suspending rpc server!");
+}
+
+void resume_rpc() {
+	suspend_flag = 0;
+	kproc_create(rpc_server_thread, NULL, &krpcproc, NULL, 0, "rpcproc");
+	uprintf("[jkpatch] restarted rpc server!");
+}
+
 void init_rpc() {
 	net_disable_copy_checks();
 
 	kproc_create(rpc_server_thread, NULL, &krpcproc, NULL, 0, "rpcproc");
 
 	uprintf("[jkpatch] started rpc server!");
+
+	eventhandler_register(NULL, "system_suspend_phase1", &suspend_rpc, NULL, 10000);
+	eventhandler_register(NULL, "system_resume_phase1",  &resume_rpc,  NULL, 10000);
 }

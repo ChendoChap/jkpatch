@@ -54,6 +54,7 @@
 #define __vm_map_lock							0x391F40
 #define __vm_map_unlock 						0x391FB0
 #define __proc_rwmem							0x17CB70
+#define __eventhandler_register					0x3C97F0
 
 #define __disable_console_output        0x1997BC8
 #define __M_TEMP					   	0x1993B30

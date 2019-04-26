@@ -9,8 +9,6 @@
 - RPC server
 - RPC client in C#
 
-I use the standard fake pkg keys, created by flatz.
-
 ### General Notes
 **Only for 4.55 Jailbroken PlayStation 4 consoles!**
 

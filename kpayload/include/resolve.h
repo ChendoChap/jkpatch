@@ -45,6 +45,7 @@ int (*fpu_kern_leave)(struct thread *td, void *ctx);
 void (*kern_reboot)(int magic);
 int	(*fill_regs)(struct thread *td, struct reg *rg);
 int	(*set_regs)(struct thread *td, struct reg *rg);
+void (*eventhandler_register)(void *list, const char *name, void *func, void *arg, int priority);
 
 // virtual memory
 struct vmspace *(*vmspace_acquire_ref)(struct proc *p);
